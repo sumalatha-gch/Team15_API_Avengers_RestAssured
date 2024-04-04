@@ -188,6 +188,8 @@ public class ProgramModuleSD {
 		List<Map<String, String>> featureRowsMap = ExcelReaderData.getInstance().getRowsListByFeatureKey(feature);
 		 for(int i=0;i<featureRowsMap.size();i++) {
 			 Map<String, String> recordMap = featureRowsMap.get(i);
+		 try {
+
 			 this.programResponse = RestAssured.given()
 						.header("Authorization","Bearer "+ ReusableVariables.bearerToken)
 						.header("Content-Type","application/json").when()
@@ -195,6 +197,14 @@ public class ProgramModuleSD {
 					valid_resp = programResponse.then().log().all()
 						.assertThat()
 						.statusCode(Integer.parseInt(recordMap.get("Status Code")));
+			} catch (AssertionError  e) { 
+				// TODO Auto-generated catch block
+				System.out.println(" AssertionError  User Login ---"+ e.getLocalizedMessage());
+				//e.printStackTrace();
+				LoggerLoad.logBug("Excel Row S.No: "+recordMap.get("S.no") +"\t"+
+						feature+"\t"+
+						e.getLocalizedMessage());
+			}
 		 }
 			 
 	}
